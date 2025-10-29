@@ -14,6 +14,7 @@ from simulation.validation import (
     validate_causality, spectral_analysis, lyapunov_exponent_estimation,
     information_theoretic_measures, stationarity_test
 )
+from simulation.export import export_to_csv, export_to_json, export_analysis_report
 
 
 app = FastAPI(
@@ -160,6 +161,65 @@ async def compare_materials(requests: List[SimulationRequest]):
         })
     
     return {"comparisons": results}
+
+
+@app.post("/export/csv")
+async def export_csv(data: SimulationResponse, material_name: str):
+    """
+    CSV形式でエクスポート
+    """
+    try:
+        import tempfile
+        import os
+        
+        temp_file = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.csv')
+        filepath = export_to_csv(data.dict(), temp_file.name)
+        
+        with open(filepath, 'r') as f:
+            content = f.read()
+        
+        os.unlink(filepath)
+        
+        return {
+            "filename": f"{material_name}_simulation.csv",
+            "content": content
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/export/report")
+async def export_report(
+    data: SimulationResponse, 
+    material_name: str,
+    stimulus_type: str
+):
+    """
+    学術レポート形式でエクスポート
+    """
+    try:
+        import tempfile
+        import os
+        
+        temp_file = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.md')
+        filepath = export_analysis_report(
+            data.dict(), 
+            material_name, 
+            stimulus_type, 
+            temp_file.name
+        )
+        
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        os.unlink(filepath)
+        
+        return {
+            "filename": f"{material_name}_{stimulus_type}_report.md",
+            "content": content
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 if __name__ == "__main__":
