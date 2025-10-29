@@ -161,3 +161,4 @@ export default function Visualization({ data, materialName }: VisualizationProps
     </div>
   );
 }
+

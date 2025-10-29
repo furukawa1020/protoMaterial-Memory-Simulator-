@@ -23,6 +23,42 @@ export interface AnalysisResult {
   peak_time: number;
   decay_rate: number;
   mutual_information: number;
+  causality?: {
+    max_correlation: number;
+    optimal_lag: number;
+    p_value: number;
+    is_significant: boolean;
+    cross_correlation: number[];
+  };
+  spectral?: {
+    frequencies: number[];
+    psd: number[];
+    dominant_frequency: number;
+    total_power: number;
+    low_freq_power: number;
+    mid_freq_power: number;
+    high_freq_power: number;
+    low_freq_ratio: number;
+  };
+  information_theory?: {
+    entropy_input: number;
+    entropy_output: number;
+    joint_entropy: number;
+    mutual_information: number;
+    conditional_entropy: number;
+    normalized_mutual_information: number;
+    transfer_entropy: number;
+    information_efficiency: number;
+  };
+  stationarity?: {
+    is_stationary: boolean;
+    mean_trend: number;
+    variance_trend: number;
+    kruskal_p_value: number;
+    mean_stability: number;
+  };
+  lyapunov_exponent?: number;
+  system_stability?: string;
 }
 
 export interface SimulationResponse {

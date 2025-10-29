@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import ControlPanel from '@/components/ControlPanel';
 import Visualization from '@/components/Visualization';
+import AcademicAnalysis from '@/components/AcademicAnalysis';
 import { runSimulation } from '@/lib/api';
 import { SimulationResponse, MaterialType, StimulusType } from '@/lib/types';
 import '../globals.css';
@@ -81,9 +82,10 @@ export default function Home() {
             <ControlPanel onSimulate={handleSimulate} isLoading={isLoading} />
           </div>
 
-          {/* 右サイド：可視化エリア */}
-          <div className="lg:col-span-2">
+          {/* 右サイド:可視化エリア */}
+          <div className="lg:col-span-2 space-y-6">
             <Visualization data={result} materialName={currentMaterial} />
+            {result && <AcademicAnalysis data={result} materialName={currentMaterial} />}
           </div>
         </div>
 
