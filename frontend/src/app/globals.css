@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --max-width: 1280px;
+  --border-radius: 12px;
+  --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Code', 'Source Code Pro',
+    'Courier New', monospace;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+code {
+  font-family: var(--font-mono);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.material-button {
+  @apply px-4 py-2 rounded-lg transition-all duration-200;
+  @apply hover:scale-105 active:scale-95;
+  @apply font-semibold text-white;
+}
+
+.slider-custom {
+  @apply w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer;
+}
+
+.slider-custom::-webkit-slider-thumb {
+  @apply appearance-none w-4 h-4 bg-indigo-600 rounded-full cursor-pointer;
+  @apply hover:bg-indigo-700 transition-colors;
+}
+
+.slider-custom::-moz-range-thumb {
+  @apply w-4 h-4 bg-indigo-600 rounded-full cursor-pointer border-0;
+  @apply hover:bg-indigo-700 transition-colors;
+}
