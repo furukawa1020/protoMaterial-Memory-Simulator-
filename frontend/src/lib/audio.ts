@@ -1,12 +1,12 @@
 /**
- * 音響フィードバックユーティリティ(Tone.js)
+ * 音響フィードバックユーティリティ(Tone.js) - 一時的に無効化
  * 素材の特性に応じた音色・周波数マッピング
  */
-import * as Tone from 'tone';
+// import * as Tone from 'tone';
 import { MaterialType, SimulationResponse } from './types';
 
 // 素材ごとの音色マッピング
-const MATERIAL_SOUNDS: Record<MaterialType, { baseFreq: number; waveform: OscillatorType }> = {
+const MATERIAL_SOUNDS: Record<MaterialType, { baseFreq: number; waveform: string }> = {
   wood: { baseFreq: 220, waveform: 'triangle' },      // 木: 温かみのある三角波
   metal: { baseFreq: 440, waveform: 'sine' },         // 金属: クリアな正弦波
   cloth: { baseFreq: 330, waveform: 'sawtooth' },     // 布: 柔らかいノコギリ波
@@ -14,7 +14,7 @@ const MATERIAL_SOUNDS: Record<MaterialType, { baseFreq: number; waveform: Oscill
   water: { baseFreq: 523.25, waveform: 'sine' },      // 水: 高音の正弦波
 };
 
-let synth: Tone.Synth | null = null;
+// let synth: Tone.Synth | null = null;
 let isInitialized = false;
 
 /**
@@ -23,18 +23,19 @@ let isInitialized = false;
 export async function initAudio(): Promise<void> {
   if (isInitialized) return;
   
-  await Tone.start();
-  synth = new Tone.Synth({
-    oscillator: {
-      type: 'sine'
-    },
-    envelope: {
-      attack: 0.1,
-      decay: 0.2,
-      sustain: 0.3,
-      release: 1
-    }
-  }).toDestination();
+  console.log('[Audio] Tone.js is temporarily disabled');
+  // await Tone.start();
+  // synth = new Tone.Synth({
+  //   oscillator: {
+  //     type: 'sine'
+  //   },
+  //   envelope: {
+  //     attack: 0.1,
+  //     decay: 0.2,
+  //     sustain: 0.3,
+  //     release: 1
+  //   }
+  // }).toDestination();
   
   isInitialized = true;
 }
@@ -43,7 +44,7 @@ export async function initAudio(): Promise<void> {
  * シミュレーション結果に基づいた音響再生
  * @param material 素材タイプ
  * @param data シミュレーション結果
- * @param duration 再生時間（秒）
+ * @param duration 再生時間(秒)
  */
 export async function playMaterialSound(
   material: MaterialType,
@@ -54,17 +55,15 @@ export async function playMaterialSound(
     await initAudio();
   }
   
-  if (!synth) return;
-  
   const { baseFreq, waveform } = MATERIAL_SOUNDS[material];
-  synth.oscillator.type = waveform;
-  
-  // 応答の平均値から音程を微調整(記憶の強さを反映)
   const avgResponse = data.response.reduce((sum: number, val: number) => sum + val, 0) / data.response.length;
-  const frequencyOffset = avgResponse * 50; // 最大±50Hz
+  const frequencyOffset = avgResponse * 50;
   
-  const currentTime = Tone.now();
-  synth.triggerAttackRelease(baseFreq + frequencyOffset, duration, currentTime);
+  console.log(`[Audio] Playing ${material} sound: ${baseFreq + frequencyOffset}Hz (${waveform}), duration: ${duration}s`);
+  // if (!synth) return;
+  // synth.oscillator.type = waveform;
+  // const currentTime = Tone.now();
+  // synth.triggerAttackRelease(baseFreq + frequencyOffset, duration, currentTime);
 }
 
 /**
@@ -75,19 +74,20 @@ export async function playStimulus(intensity: number): Promise<void> {
     await initAudio();
   }
   
-  if (!synth) return;
-  
-  const freq = 800 + intensity * 200; // 強度に応じて周波数変化
-  synth.triggerAttackRelease(freq, 0.05);
+  const freq = 800 + intensity * 200;
+  console.log(`[Audio] Playing stimulus: ${freq}Hz`);
+  // if (!synth) return;
+  // synth.triggerAttackRelease(freq, 0.05);
 }
 
 /**
  * リソースのクリーンアップ
  */
 export function disposeAudio(): void {
-  if (synth) {
-    synth.dispose();
-    synth = null;
-  }
+  console.log('[Audio] Disposing audio resources');
+  // if (synth) {
+  //   synth.dispose();
+  //   synth = null;
+  // }
   isInitialized = false;
 }
