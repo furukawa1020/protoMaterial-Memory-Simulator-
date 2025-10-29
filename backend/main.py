@@ -10,6 +10,10 @@ import numpy as np
 from models.material import get_material, MATERIAL_PRESETS
 from models.stimulus import generate_stimulus, StimulusType
 from simulation.engine import DelaySimulator, analyze_memory, calculate_mutual_information
+from simulation.validation import (
+    validate_causality, spectral_analysis, lyapunov_exponent_estimation,
+    information_theoretic_measures, stationarity_test
+)
 
 
 app = FastAPI(
@@ -99,12 +103,33 @@ async def simulate(request: SimulationRequest):
         simulator = DelaySimulator(material, dt=request.dt)
         y, x_states = simulator.simulate(t, u)
         
-        # 記憶解析
+        # 基本記憶解析
         analysis = analyze_memory(t, y)
         
         # 相互情報量
         mutual_info = calculate_mutual_information(u, y)
         analysis["mutual_information"] = mutual_info
+        
+        # 学術的検証（統計的有意性・因果性）
+        causality = validate_causality(u, y, request.dt)
+        analysis["causality"] = causality
+        
+        # スペクトル解析
+        spectral = spectral_analysis(y, request.dt)
+        analysis["spectral"] = spectral
+        
+        # 情報理論的指標
+        info_measures = information_theoretic_measures(u, y)
+        analysis["information_theory"] = info_measures
+        
+        # 定常性検定
+        stationarity = stationarity_test(y)
+        analysis["stationarity"] = stationarity
+        
+        # リアプノフ指数（系の安定性）
+        lyapunov = lyapunov_exponent_estimation(y, request.dt)
+        analysis["lyapunov_exponent"] = lyapunov
+        analysis["system_stability"] = "stable" if lyapunov < 0 else "unstable" if lyapunov > 0.1 else "marginally_stable"
         
         return SimulationResponse(
             time=t.tolist(),
