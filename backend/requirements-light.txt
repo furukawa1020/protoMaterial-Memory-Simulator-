@@ -1,0 +1,7 @@
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+python-multipart==0.0.6
+# NumPy/SciPy omitted to keep install light — install later for full research mode
+# For full analysis (entropy, PSD, scipy.signal, etc.), install numpy and scipy:
+# pip install numpy scipy
