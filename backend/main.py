@@ -129,8 +129,25 @@ async def simulate(request: SimulationRequest):
         
         # リアプノフ指数（系の安定性）
         lyapunov = lyapunov_exponent_estimation(y, request.dt)
-        analysis["lyapunov_exponent"] = lyapunov
+        analysis["lyapunov_exponent"] = float(lyapunov)
         analysis["system_stability"] = "stable" if lyapunov < 0 else "unstable" if lyapunov > 0.1 else "marginally_stable"
+        
+        # numpy型をPython標準型に変換
+        def convert_numpy_types(obj):
+            """numpy型を再帰的にPython標準型に変換"""
+            if isinstance(obj, dict):
+                return {k: convert_numpy_types(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [convert_numpy_types(item) for item in obj]
+            elif isinstance(obj, np.ndarray):
+                return obj.tolist()
+            elif isinstance(obj, (np.integer, np.floating)):
+                return float(obj)
+            elif isinstance(obj, np.bool_):
+                return bool(obj)
+            return obj
+        
+        analysis = convert_numpy_types(analysis)
         
         return SimulationResponse(
             time=t.tolist(),
