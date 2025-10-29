@@ -4,7 +4,7 @@
 """
 import numpy as np
 from typing import Tuple
-from ..models.material import MaterialModel
+from models.material import MaterialModel
 
 
 class DelaySimulator:
