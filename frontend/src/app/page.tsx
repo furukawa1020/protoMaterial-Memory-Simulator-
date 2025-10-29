@@ -7,7 +7,6 @@ import AcademicAnalysis from '@/components/AcademicAnalysis';
 import ExportPanel from '@/components/ExportPanel';
 import { runSimulation } from '@/lib/api';
 import { SimulationResponse, MaterialType, StimulusType } from '@/lib/types';
-import '../globals.css';
 
 const materialNames: Record<MaterialType, string> = {
   wood: '木材',
