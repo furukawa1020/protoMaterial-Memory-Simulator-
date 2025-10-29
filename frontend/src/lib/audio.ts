@@ -59,9 +59,9 @@ export async function playMaterialSound(
   const { baseFreq, waveform } = MATERIAL_SOUNDS[material];
   synth.oscillator.type = waveform;
   
-  // 出力の平均値から音程を微調整（記憶の強さを反映）
-  const avgOutput = data.output.reduce((sum, val) => sum + val, 0) / data.output.length;
-  const frequencyOffset = avgOutput * 50; // 最大±50Hz
+  // 応答の平均値から音程を微調整（記憶の強さを反映）
+  const avgResponse = data.response.reduce((sum: number, val: number) => sum + val, 0) / data.response.length;
+  const frequencyOffset = avgResponse * 50; // 最大±50Hz
   
   const now = Tone.now();
   synth.triggerAttackRelease(baseFreq + frequencyOffset, duration, now);
