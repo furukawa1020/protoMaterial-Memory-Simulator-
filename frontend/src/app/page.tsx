@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import ControlPanel from '@/components/ControlPanel';
 import Visualization from '@/components/Visualization';
 import AcademicAnalysis from '@/components/AcademicAnalysis';
+import ExportPanel from '@/components/ExportPanel';
 import { runSimulation } from '@/lib/api';
 import { SimulationResponse, MaterialType, StimulusType } from '@/lib/types';
 import '../globals.css';
@@ -20,6 +21,8 @@ export default function Home() {
   const [result, setResult] = useState<SimulationResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentMaterial, setCurrentMaterial] = useState<string>('');
+  const [currentMaterialType, setCurrentMaterialType] = useState<MaterialType>('wood');
+  const [currentStimulusType, setCurrentStimulusType] = useState<StimulusType>('heat');
   const [error, setError] = useState<string | null>(null);
 
   const handleSimulate = async (params: {
@@ -44,6 +47,8 @@ export default function Home() {
       
       setResult(response);
       setCurrentMaterial(materialNames[params.material]);
+      setCurrentMaterialType(params.material);
+      setCurrentStimulusType(params.stimulus);
     } catch (err) {
       setError('シミュレーションに失敗しました。バックエンドが起動しているか確認してください。');
       console.error(err);
@@ -86,6 +91,13 @@ export default function Home() {
           <div className="lg:col-span-2 space-y-6">
             <Visualization data={result} materialName={currentMaterial} />
             {result && <AcademicAnalysis data={result} materialName={currentMaterial} />}
+            {result && (
+              <ExportPanel
+                data={result}
+                materialType={currentMaterialType}
+                stimulusType={currentStimulusType}
+              />
+            )}
           </div>
         </div>
 
