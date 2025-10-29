@@ -1,5 +1,5 @@
 /**
- * 音響フィードバックユーティリティ（Tone.js）
+ * 音響フィードバックユーティリティ(Tone.js)
  * 素材の特性に応じた音色・周波数マッピング
  */
 import * as Tone from 'tone';
@@ -18,7 +18,7 @@ let synth: Tone.Synth | null = null;
 let isInitialized = false;
 
 /**
- * Tone.jsの初期化（ユーザーインタラクション後に呼ぶ）
+ * Tone.jsの初期化(ユーザーインタラクション後に呼ぶ)
  */
 export async function initAudio(): Promise<void> {
   if (isInitialized) return;
@@ -59,12 +59,12 @@ export async function playMaterialSound(
   const { baseFreq, waveform } = MATERIAL_SOUNDS[material];
   synth.oscillator.type = waveform;
   
-  // 応答の平均値から音程を微調整（記憶の強さを反映）
+  // 応答の平均値から音程を微調整(記憶の強さを反映)
   const avgResponse = data.response.reduce((sum: number, val: number) => sum + val, 0) / data.response.length;
   const frequencyOffset = avgResponse * 50; // 最大±50Hz
   
-  const now = Tone.now();
-  synth.triggerAttackRelease(baseFreq + frequencyOffset, duration, now);
+  const currentTime = Tone.now();
+  synth.triggerAttackRelease(baseFreq + frequencyOffset, duration, currentTime);
 }
 
 /**
